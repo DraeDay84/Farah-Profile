@@ -1,198 +1,660 @@
-<script>
-    const data = {
-        photos: [
-            {url:"farah-white-crop.jpg",alt:"Farah in white crop top"},
-            {url:"farah-black-dress.jpg",alt:"Farah in black dress"},
-            {url:"farah-orange-top.jpg",alt:"Farah in orange top"},
-            {url:"farah-white-outfit.jpg",alt:"Farah in white outfit"},
-            {url:"farah-casual.jpg",alt:"Farah in casual attire"}
-        ],
-        tabs: [
-            {id:"overview",icon:"user",label:"Overview"},
-            {id:"appearance",icon:"eye",label:"Appearance"},
-            {id:"interests",icon:"heart",label:"Interests"},
-            {id:"music",icon:"music",label:"Music"},
-            {id:"career",icon:"briefcase",label:"Career"},
-            {id:"plans",icon:"calendar",label:"Plans"},
-            {id:"updates",icon:"comments",label:"Updates"}
-        ],
-        sections: {
-            overview: {
-                title: "Basic Information",
-                icon: "user",
-                items: [
-                    {icon:"map-marker-alt",text:"Location: Danbury, Connecticut"},
-                    {icon:"ruler-vertical",text:"Height: 5'7\""},
-                    {icon:"graduation-cap",text:"Education: College degree"},
-                    {icon:"language",text:"Languages: English, Spanish"},
-                    {icon:"users",text:"Children: None"}
-                ]
-            },
-            appearance: {
-                title: "Appearance",
-                icon: "eye",
-                items: [
-                    {icon:"smile",text:"Radiant smile, warm presence"},
-                    {icon:"paint-brush",text:"Long wavy brown hair with highlights"},
-                    {icon:"sun",text:"Beautiful bronze complexion"},
-                    {icon:"palette",text:"Bold colors: greens, yellows, whites"},
-                    {icon:"gem",text:"Stylish accessories and jewelry"}
-                ]
-            },
-            interests: {
-                title: "Interests",
-                icon: "star",
-                items: [
-                    {icon:"book-reader",text:'Currently Reading: "The Creature of Jekyll Island"'},
-                    {icon:"university",text:"Interests: Business, Finance, Economics"},
-                    {icon:"utensils",text:"Cooking: Makes amazing seasoned Pernil"},
-                    {icon:"comments",text:"Communication Style: Natural, friendly, mature"}
-                ]
-            },
-            music: {
-                title: "Music Preferences",
-                icon: "music",
-                items: [
-                    {icon:"headphones-alt",text:'Enjoyed: Future - "Jersey"'},
-                    {icon:"star",text:'Favorite: "Renuncio" by Proyecto A',lang:"es"},
-                    {icon:"guitar",text:"Enjoys: Romeo Santos, Juan Luis Guerra, Prince Royce"}
-                ]
-            },
-            career: {
-                title: "Career",
-                icon: "briefcase",
-                items: [
-                    {icon:"building",text:"Sales for construction company"},
-                    {icon:"home",text:"Future Goal: House flipping"},
-                    {icon:"lightbulb",text:"Learning construction industry"}
-                ]
-            },
-            plans: {
-                title: "Plans",
-                icon: "calendar",
-                items: [
-                    {icon:"glass-cheers",text:"Available New Year's Day"},
-                    {icon:"music",text:"Interest in salsa classes"}
-                ]
-            },
-            updates: {
-                title: "Recent Updates",
-                icon: "comments",
-                items: [
-                    {icon:"calendar",text:"Last Active: December 21, 2024"},
-                    {icon:"comment",text:"Style: Direct and friendly"}
-                ]
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Farah Luis - Profile page showcasing interests, career, and updates">
+    <title>Farah Luis Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root{--primary:#1a1a1a;--secondary:#666;--accent:#06f;--bg:#f0f2f5;--card-bg:#fff;--shadow:0 2px 4px rgba(0,0,0,.1)}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Roboto,Arial,sans-serif}
+        body{background:var(--bg);padding:20px;min-height:100vh}
+        .container{max-width:1000px;margin:0 auto}
+        .card{background:var(--card-bg);border-radius:8px;padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+        .header{display:flex;gap:20px;align-items:flex-start}
+        .profile-image{width:300px;height:400px;border-radius:8px;overflow:hidden;position:relative;background:#f8f8f8}
+        .carousel-container{position:relative;width:100%;height:100%;overflow:hidden}
+        .carousel{display:flex;height:100%;transition:transform .3s ease-out}
+        .carousel-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f0f0f0}
+        .carousel-slide img{width:100%;height:100%;object-fit:cover}
+        .carousel-error{padding:20px;text-align:center;color:var(--secondary)}
+        .carousel-error i{font-size:48px;margin-bottom:10px}
+        .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1;transition:all .2s}
+        .carousel-btn:hover,.carousel-btn:focus{background:rgba(0,0,0,.7);transform:translateY(-50%) scale(1.1)}
+        .prev{left:10px}
+        .next{right:10px}
+        .dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:1;background:rgba(0,0,0,.3);padding:5px 10px;border-radius:15px}
+        .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .2s}
+        .dot.active{background:#fff;transform:scale(1.2)}
+        .profile-info{flex:1}
+        .name{font-size:24px;color:var(--primary);margin-bottom:10px}
+        .bio{color:var(--secondary);line-height:1.5;margin-bottom:15px}
+        .contact{display:flex;align-items:center;gap:8px;color:var(--secondary);margin-bottom:10px}
+        .status{color:#ff4d4d;display:flex;align-items:center;gap:8px}
+        .recent-messages{margin-top:15px;padding:15px;background:#f8f8f8;border-radius:8px}
+        .recent-messages p{margin-bottom:12px;padding:8px;background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+        .tabs{display:flex;gap:10px;overflow-x:auto;padding:10px;margin:-10px -10px 10px;scrollbar-width:thin}
+        .tab{display:flex;align-items:center;gap:8px;padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;color:var(--primary);transition:.2s}
+        .tab:hover{background:#e0e0e0}
+        .tab.active{background:var(--accent);color:#fff}
+        .content{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+        .item{display:flex;align-items:center;gap:8px;padding:10px;border-bottom:1px solid #eee}
+        .item i{color:var(--accent);width:20px}
+        .section{display:none}
+        .section.active{display:block}
+        .section-title{display:flex;align-items:center;gap:8px;font-size:18px;margin-bottom:15px}
+        @media (max-width:768px){
+            .header{flex-direction:column}
+            .profile-image{width:100%;max-width:300px;margin:0 auto}
+            .profile-info{text-align:center}
+            .contact,.status{justify-content:center}
         }
-    };
-
-    let currentSlide = 0, currentTab = "overview";
-
-    function initCarousel() {
-        const carousel = document.querySelector(".carousel"),
-              dots = document.querySelector(".dots");
-        
-        data.photos.forEach((photo, i) => {
-            const slide = document.createElement("div");
-            slide.className = "carousel-slide";
-            
-            const img = document.createElement("img");
-            img.src = photo.url;
-            img.alt = photo.alt;
-            img.loading = "lazy";
-            
-            slide.appendChild(img);
-            carousel.appendChild(slide);
-            
-            const dot = document.createElement("button");
-            dot.className = `dot ${i === 0 ? "active" : ""}`;
-            dot.onclick = () => showSlide(i);
-            dots.appendChild(dot);
-        });
-    }
-
-    function showSlide(n) {
-        const carousel = document.querySelector(".carousel");
-        currentSlide = n;
-        carousel.style.transform = `translateX(-${n * 100}%)`;
-        document.querySelectorAll(".dot").forEach((dot, i) => 
-            dot.classList.toggle("active", i === n)
-        );
-    }
-
-    function nextSlide() {
-        showSlide((currentSlide + 1) % data.photos.length);
-    }
-
-    function prevSlide() {
-        showSlide((currentSlide - 1 + data.photos.length) % data.photos.length);
-    }
-
-    document.querySelector(".next").onclick = nextSlide;
-    document.querySelector(".prev").onclick = prevSlide;
-
-    function initTabs() {
-        const tabsContainer = document.getElementById("tabs");
-        data.tabs.forEach(tab => {
-            const btn = document.createElement("button");
-            btn.className = `tab ${tab.id === currentTab ? "active" : ""}`;
-            btn.onclick = () => showSection(tab.id);
-            btn.innerHTML = `<i class="fas fa-${tab.icon}"></i>${tab.label}`;
-            tabsContainer.appendChild(btn);
-        });
-    }
-
-    function showSection(id) {
-        currentTab = id;
-        document.querySelectorAll(".tab").forEach(tab => 
-            tab.classList.toggle("active", tab.textContent.includes(data.tabs.find(t => t.id === id).label))
-        );
-        document.querySelectorAll(".section").forEach(section => 
-            section.classList.toggle("active", section.id === id)
-        );
-    }
-
-    function initSections() {
-        const content = document.getElementById("content");
-        Object.entries(data.sections).forEach(([id, section]) => {
-            const div = document.createElement("div");
-            div.className = `section ${id === currentTab ? "active" : ""}`;
-            div.id = id;
-            div.innerHTML = `
-                <h2 class="section-title">
-                    <i class="fas fa-${section.icon}"></i>${section.title}
-                </h2>
-                <div class="content">
-                    ${section.items.map(item => `
-                        <div class="item"${item.lang ? ` lang="${item.lang}"` : ""}>
-                            <i class="fas fa-${item.icon}"></i>
-                            <span>${item.text}</span>
-                        </div>
-                    `).join("")}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card header">
+            <div class="profile-image" role="region" aria-label="Photo gallery">
+                <div class="carousel-container">
+                    <div class="carousel"></div>
                 </div>
-            `;
-            content.appendChild(div);
-        });
+                <button class="carousel-btn prev" aria-label="Previous photo">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next" aria-label="Next photo">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="dots"></div>
+            </div>
+            <div class="profile-info">
+                <h1 class="name">Farah Luis, 25</h1>
+                <p class="bio">Originally from the Dominican Republic, she moved to the US in 2017 with her mother and brother. A lover of laughter, good food, and great company, she has proven to be remarkably mature and accomplished for her age.</p>
+                <div class="contact">
+                    <i class="fas fa-phone"></i>
+                    <a href="tel:+13477978085">(347) 797-8085</a>
+                </div>
+                <div class="status">
+                    <i class="fas fa-bed"></i>
+                    <span>Getting Better (Update: Dec 21)</span>
+                </div>
+                <div class="recent-messages">
+                    <p>"Good morning ✨. I apologize, I was so tired that I knocked out of nowhere."</p>
+                    <p>"Haha the joke about Bali it was not OD lol. Why would it? You overthink too much lol. It's sad it's only a joke because I'd be down to go 😋."</p>
+                    <p>"How was your sleep? Do you usually gets up so early?"</p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="tabs" id="tabs"></div>
+            <div id="content"></div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+// Data configuration
+const data = {
+    photos: [
+        {url:"./images/farah-white-crop.jpg",alt:"Farah in white crop top"},
+        {url:"./images/farah-black-dress.jpg",alt:"Farah in black dress"},
+        {url:"./images/farah-orange-top.jpg",alt:"Farah in orange top"},
+        {url:"./images/farah-white-outfit.jpg",alt:"Farah in white outfit"},
+        {url:"./images/farah-casual.jpg",alt:"Farah in casual attire"}
+    ],
+    tabs: [
+        {id:"overview",icon:"user",label:"Overview"},
+        {id:"appearance",icon:"eye",label:"Appearance"},
+        {id:"interests",icon:"heart",label:"Interests"},
+        {id:"music",icon:"music",label:"Music"},
+        {id:"career",icon:"briefcase",label:"Career"},
+        {id:"plans",icon:"calendar",label:"Plans"},
+        {id:"updates",icon:"comments",label:"Updates"}
+    ],
+    sections: {
+        overview: {
+            title: "Basic Information",
+            icon: "user",
+            items: [
+                {icon:"map-marker-alt",text:"Location: Danbury, Connecticut"},
+                {icon:"ruler-vertical",text:"Height: 5'7\""},
+                {icon:"graduation-cap",text:"Education: College degree"},
+                {icon:"language",text:"Languages: English, Spanish"},
+                {icon:"users",text:"Children: None"}
+            ]
+        },
+        appearance: {
+            title: "Appearance",
+            icon: "eye",
+            items: [
+                {icon:"smile",text:"Radiant smile, warm presence"},
+                {icon:"paint-brush",text:"Long wavy brown hair with highlights"},
+                {icon:"sun",text:"Beautiful bronze complexion"},
+                {icon:"palette",text:"Bold colors: greens, yellows, whites"},
+                {icon:"gem",text:"Stylish accessories and jewelry"}
+            ]
+        },
+        interests: {
+            title: "Interests",
+            icon: "star",
+            items: [
+                {icon:"book-reader",text:'Currently Reading: "The Creature of Jekyll Island"'},
+                {icon:"university",text:"Interests: Business, Finance, Economics"},
+                {icon:"utensils",text:"Cooking: Makes amazing seasoned Pernil"},
+                {icon:"comments",text:"Communication Style: Natural, friendly, mature"}
+            ]
+        },
+        music: {
+            title: "Music Preferences",
+            icon: "music",
+            items: [
+                {icon:"headphones-alt",text:'Enjoyed: Future - "Jersey"'},
+                {icon:"star",text:'Favorite: "Renuncio" by Proyecto A',lang:"es"},
+                {icon:"guitar",text:"Enjoys: Romeo Santos, Juan Luis Guerra, Prince Royce"}
+            ]
+        },
+        career: {
+            title: "Career",
+            icon: "briefcase",
+            items: [
+                {icon:"building",text:"Sales for construction company"},
+                {icon:"home",text:"Future Goal: House flipping"},
+                {icon:"lightbulb",text:"Learning construction industry"}
+            ]
+        },
+        plans: {
+            title: "Plans",
+            icon: "calendar",
+            items: [
+                {icon:"glass-cheers",text:"Available New Year's Day"},
+                {icon:"music",text:"Interest in salsa classes"}
+            ]
+        },
+        updates: {
+            title: "Recent Updates",
+            icon: "comments",
+            items: [
+                {icon:"calendar",text:"Last Active: December 21, 2024"},
+                {icon:"comment",text:"Style: Direct and friendly"}
+            ]
+        }
     }
+};
 
-    let autoplayInterval;
+// Global variables
+let currentSlide = 0;
+let currentTab = "overview";
+let autoplayInterval;
 
-    function startAutoplay() {
-        autoplayInterval = setInterval(nextSlide, 5000);
-    }
+// Error handling for images
+function handleImageError(img, alt, url) {
+    const slide = img.parentElement;
+    slide.innerHTML = `
+        <div class="carousel-error">
+            <i class="fas fa-image"></i><br>
+            ${alt}<br>
+            <small>Image failed to load</small>
+        </div>`;
+    console.error(`Failed to load image: ${url}`);
+}
 
-    function stopAutoplay() {
+// Carousel initialization
+function initCarousel() {
+    const carousel = document.querySelector(".carousel");
+    const dots = document.querySelector(".dots");
+    
+    data.photos.forEach((photo, i) => {
+        // Create slide
+        const slide = document.createElement("div");
+        slide.className = "carousel-slide";
+        slide.setAttribute("role", "listitem");
+        
+        // Create and setup image
+        const img = document.createElement("img");
+        img.src = photo.url;
+        img.alt = photo.alt;
+        img.loading = "lazy";
+        img.onerror = () => handleImageError(img, photo.alt, photo.url);
+        
+        slide.appendChild(img);
+        carousel.appendChild(slide);
+        
+        // Create dot
+        const dot = document.createElement("button");
+        dot.className = `dot ${i === 0 ? "active" : ""}`;
+        dot.setAttribute("aria-label", `View ${photo.alt}`);
+        dot.onclick = () => showSlide(i);
+        dots.appendChild(dot);
+    });
+}
+
+// Carousel navigation
+function showSlide(n) {
+    const carousel = document.querySelector(".carousel");
+    currentSlide = n;
+    carousel.style.transform = `translateX(-${n * 100}%)`;
+    document.querySelectorAll(".dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === n);
+        dot.setAttribute("aria-selected", i === n);
+    });
+}
+
+function nextSlide() {
+    showSlide((currentSlide + 1) % data.photos.length);
+}
+
+function prevSlide() {
+    showSlide((currentSlide - 1 + data.photos.length) % data.photos.length);
+}
+
+// Tab system initialization
+function initTabs() {
+    const tabsContainer = document.getElementById("tabs");
+    data.tabs.forEach(tab => {
+        const btn = document.createElement("button");
+        btn.className = `tab ${tab.id === currentTab ? "active" : ""}`;
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", tab.id === currentTab);
+        btn.onclick = () => showSection(tab.id);
+        btn.innerHTML = `<i class="fas fa-${tab.icon}"></i>${tab.label}`;
+        tabsContainer.appendChild(btn);
+    });
+}
+
+function showSection(id) {
+    currentTab = id;
+    document.querySelectorAll(".tab").forEach(tab => {
+        const isActive = tab.textContent.includes(data.tabs.find(t => t.id === id).label);
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive);
+    });
+    document.querySelectorAll(".section").forEach(section => {
+        section.classList.toggle("active", section.id === id);
+    });
+}
+
+// Content sections initialization
+function initSections() {
+    const content = document.getElementById("content");
+    Object.entries(data.sections).forEach(([id, section]) => {
+        const div = document.createElement("div");
+        div.className = `section ${id === currentTab ? "active" : ""}`;
+        div.id = id;
+        div.setAttribute("role", "tabpanel");
+        div.innerHTML = `
+            <h2 class="section-title">
+                <i class="fas fa-${section.icon}"></i>${section.title}
+            </h2>
+            <div class="content">
+                ${section.items.map(item => `
+                    <div class="item"${item.lang ? ` lang="${item.lang}"` : ""}>
+                        <i class="fas fa-${item.icon}"></i>
+                        <span>${item.text}</span>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+        content.appendChild(div);
+    });
+}
+
+// Autoplay functionality
+function startAutoplay() {
+    stopAutoplay();
+    autoplayInterval = setInterval(nextSlide, 5000);
+}
+
+function stopAutoplay() {
+    if (autoplayInterval) {
         clearInterval(autoplayInterval);
     }
+}
 
-    const carouselContainer = document.querySelector(".carousel-container");
-    carouselContainer.addEventListener("mouseenter", stopAutoplay);
-    carouselContainer.addEventListener("mouseleave", startAutoplay);
+// Event listeners
+document.querySelector(".next").onclick = nextSlide;
+document.querySelector(".prev").onclick = prevSlide;
 
-    document.addEventListener("DOMContentLoaded", () => {
-        initCarousel();
-        initTabs();
-        initSections();
-        startAutoplay();
+const carouselContainer = document.querySelector(".carousel-container");
+carouselContainer.addEventListener("mouseenter", stopAutoplay);
+carouselContainer.addEventListener("mouseleave", startAutoplay);
+
+// Initialize everything when the DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+    initCarousel();
+    initTabs();
+    initSections();
+    startAutoplay();
+});
+</script>
+</body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Farah Luis - Profile page showcasing interests, career, and updates">
+    <title>Farah Luis Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root{--primary:#1a1a1a;--secondary:#666;--accent:#06f;--bg:#f0f2f5;--card-bg:#fff;--shadow:0 2px 4px rgba(0,0,0,.1)}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,Roboto,Arial,sans-serif}
+        body{background:var(--bg);padding:20px;min-height:100vh}
+        .container{max-width:1000px;margin:0 auto}
+        .card{background:var(--card-bg);border-radius:8px;padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+        .header{display:flex;gap:20px;align-items:flex-start}
+        .profile-image{width:300px;height:400px;border-radius:8px;overflow:hidden;position:relative;background:#f8f8f8}
+        .carousel-container{position:relative;width:100%;height:100%;overflow:hidden}
+        .carousel{display:flex;height:100%;transition:transform .3s ease-out}
+        .carousel-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f0f0f0}
+        .carousel-slide img{width:100%;height:100%;object-fit:cover}
+        .carousel-error{padding:20px;text-align:center;color:var(--secondary)}
+        .carousel-error i{font-size:48px;margin-bottom:10px}
+        .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1;transition:all .2s}
+        .carousel-btn:hover,.carousel-btn:focus{background:rgba(0,0,0,.7);transform:translateY(-50%) scale(1.1)}
+        .prev{left:10px}
+        .next{right:10px}
+        .dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:1;background:rgba(0,0,0,.3);padding:5px 10px;border-radius:15px}
+        .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .2s}
+        .dot.active{background:#fff;transform:scale(1.2)}
+        .profile-info{flex:1}
+        .name{font-size:24px;color:var(--primary);margin-bottom:10px}
+        .bio{color:var(--secondary);line-height:1.5;margin-bottom:15px}
+        .contact{display:flex;align-items:center;gap:8px;color:var(--secondary);margin-bottom:10px}
+        .status{color:#ff4d4d;display:flex;align-items:center;gap:8px}
+        .recent-messages{margin-top:15px;padding:15px;background:#f8f8f8;border-radius:8px}
+        .recent-messages p{margin-bottom:12px;padding:8px;background:#fff;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+        .tabs{display:flex;gap:10px;overflow-x:auto;padding:10px;margin:-10px -10px 10px;scrollbar-width:thin}
+        .tab{display:flex;align-items:center;gap:8px;padding:10px 20px;background:#f0f0f0;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;color:var(--primary);transition:.2s}
+        .tab:hover{background:#e0e0e0}
+        .tab.active{background:var(--accent);color:#fff}
+        .content{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+        .item{display:flex;align-items:center;gap:8px;padding:10px;border-bottom:1px solid #eee}
+        .item i{color:var(--accent);width:20px}
+        .section{display:none}
+        .section.active{display:block}
+        .section-title{display:flex;align-items:center;gap:8px;font-size:18px;margin-bottom:15px}
+        @media (max-width:768px){
+            .header{flex-direction:column}
+            .profile-image{width:100%;max-width:300px;margin:0 auto}
+            .profile-info{text-align:center}
+            .contact,.status{justify-content:center}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card header">
+            <div class="profile-image" role="region" aria-label="Photo gallery">
+                <div class="carousel-container">
+                    <div class="carousel"></div>
+                </div>
+                <button class="carousel-btn prev" aria-label="Previous photo">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next" aria-label="Next photo">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="dots"></div>
+            </div>
+            <div class="profile-info">
+                <h1 class="name">Farah Luis, 25</h1>
+                <p class="bio">Originally from the Dominican Republic, she moved to the US in 2017 with her mother and brother. A lover of laughter, good food, and great company, she has proven to be remarkably mature and accomplished for her age.</p>
+                <div class="contact">
+                    <i class="fas fa-phone"></i>
+                    <a href="tel:+13477978085">(347) 797-8085</a>
+                </div>
+                <div class="status">
+                    <i class="fas fa-bed"></i>
+                    <span>Getting Better (Update: Dec 21)</span>
+                </div>
+                <div class="recent-messages">
+                    <p>"Good morning ✨. I apologize, I was so tired that I knocked out of nowhere."</p>
+                    <p>"Haha the joke about Bali it was not OD lol. Why would it? You overthink too much lol. It's sad it's only a joke because I'd be down to go 😋."</p>
+                    <p>"How was your sleep? Do you usually gets up so early?"</p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="tabs" id="tabs"></div>
+            <div id="content"></div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+// Data configuration
+const data = {
+    photos: [
+        {url:"./images/farah-white-crop.jpg",alt:"Farah in white crop top"},
+        {url:"./images/farah-black-dress.jpg",alt:"Farah in black dress"},
+        {url:"./images/farah-orange-top.jpg",alt:"Farah in orange top"},
+        {url:"./images/farah-white-outfit.jpg",alt:"Farah in white outfit"},
+        {url:"./images/farah-casual.jpg",alt:"Farah in casual attire"}
+    ],
+    tabs: [
+        {id:"overview",icon:"user",label:"Overview"},
+        {id:"appearance",icon:"eye",label:"Appearance"},
+        {id:"interests",icon:"heart",label:"Interests"},
+        {id:"music",icon:"music",label:"Music"},
+        {id:"career",icon:"briefcase",label:"Career"},
+        {id:"plans",icon:"calendar",label:"Plans"},
+        {id:"updates",icon:"comments",label:"Updates"}
+    ],
+    sections: {
+        overview: {
+            title: "Basic Information",
+            icon: "user",
+            items: [
+                {icon:"map-marker-alt",text:"Location: Danbury, Connecticut"},
+                {icon:"ruler-vertical",text:"Height: 5'7\""},
+                {icon:"graduation-cap",text:"Education: College degree"},
+                {icon:"language",text:"Languages: English, Spanish"},
+                {icon:"users",text:"Children: None"}
+            ]
+        },
+        appearance: {
+            title: "Appearance",
+            icon: "eye",
+            items: [
+                {icon:"smile",text:"Radiant smile, warm presence"},
+                {icon:"paint-brush",text:"Long wavy brown hair with highlights"},
+                {icon:"sun",text:"Beautiful bronze complexion"},
+                {icon:"palette",text:"Bold colors: greens, yellows, whites"},
+                {icon:"gem",text:"Stylish accessories and jewelry"}
+            ]
+        },
+        interests: {
+            title: "Interests",
+            icon: "star",
+            items: [
+                {icon:"book-reader",text:'Currently Reading: "The Creature of Jekyll Island"'},
+                {icon:"university",text:"Interests: Business, Finance, Economics"},
+                {icon:"utensils",text:"Cooking: Makes amazing seasoned Pernil"},
+                {icon:"comments",text:"Communication Style: Natural, friendly, mature"}
+            ]
+        },
+        music: {
+            title: "Music Preferences",
+            icon: "music",
+            items: [
+                {icon:"headphones-alt",text:'Enjoyed: Future - "Jersey"'},
+                {icon:"star",text:'Favorite: "Renuncio" by Proyecto A',lang:"es"},
+                {icon:"guitar",text:"Enjoys: Romeo Santos, Juan Luis Guerra, Prince Royce"}
+            ]
+        },
+        career: {
+            title: "Career",
+            icon: "briefcase",
+            items: [
+                {icon:"building",text:"Sales for construction company"},
+                {icon:"home",text:"Future Goal: House flipping"},
+                {icon:"lightbulb",text:"Learning construction industry"}
+            ]
+        },
+        plans: {
+            title: "Plans",
+            icon: "calendar",
+            items: [
+                {icon:"glass-cheers",text:"Available New Year's Day"},
+                {icon:"music",text:"Interest in salsa classes"}
+            ]
+        },
+        updates: {
+            title: "Recent Updates",
+            icon: "comments",
+            items: [
+                {icon:"calendar",text:"Last Active: December 21, 2024"},
+                {icon:"comment",text:"Style: Direct and friendly"}
+            ]
+        }
+    }
+};
+
+// Global variables
+let currentSlide = 0;
+let currentTab = "overview";
+let autoplayInterval;
+
+// Error handling for images
+function handleImageError(img, alt, url) {
+    const slide = img.parentElement;
+    slide.innerHTML = `
+        <div class="carousel-error">
+            <i class="fas fa-image"></i><br>
+            ${alt}<br>
+            <small>Image failed to load</small>
+        </div>`;
+    console.error(`Failed to load image: ${url}`);
+}
+
+// Carousel initialization
+function initCarousel() {
+    const carousel = document.querySelector(".carousel");
+    const dots = document.querySelector(".dots");
+    
+    data.photos.forEach((photo, i) => {
+        // Create slide
+        const slide = document.createElement("div");
+        slide.className = "carousel-slide";
+        slide.setAttribute("role", "listitem");
+        
+        // Create and setup image
+        const img = document.createElement("img");
+        img.src = photo.url;
+        img.alt = photo.alt;
+        img.loading = "lazy";
+        img.onerror = () => handleImageError(img, photo.alt, photo.url);
+        
+        slide.appendChild(img);
+        carousel.appendChild(slide);
+        
+        // Create dot
+        const dot = document.createElement("button");
+        dot.className = `dot ${i === 0 ? "active" : ""}`;
+        dot.setAttribute("aria-label", `View ${photo.alt}`);
+        dot.onclick = () => showSlide(i);
+        dots.appendChild(dot);
     });
-</script
+}
+
+// Carousel navigation
+function showSlide(n) {
+    const carousel = document.querySelector(".carousel");
+    currentSlide = n;
+    carousel.style.transform = `translateX(-${n * 100}%)`;
+    document.querySelectorAll(".dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === n);
+        dot.setAttribute("aria-selected", i === n);
+    });
+}
+
+function nextSlide() {
+    showSlide((currentSlide + 1) % data.photos.length);
+}
+
+function prevSlide() {
+    showSlide((currentSlide - 1 + data.photos.length) % data.photos.length);
+}
+
+// Tab system initialization
+function initTabs() {
+    const tabsContainer = document.getElementById("tabs");
+    data.tabs.forEach(tab => {
+        const btn = document.createElement("button");
+        btn.className = `tab ${tab.id === currentTab ? "active" : ""}`;
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", tab.id === currentTab);
+        btn.onclick = () => showSection(tab.id);
+        btn.innerHTML = `<i class="fas fa-${tab.icon}"></i>${tab.label}`;
+        tabsContainer.appendChild(btn);
+    });
+}
+
+function showSection(id) {
+    currentTab = id;
+    document.querySelectorAll(".tab").forEach(tab => {
+        const isActive = tab.textContent.includes(data.tabs.find(t => t.id === id).label);
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive);
+    });
+    document.querySelectorAll(".section").forEach(section => {
+        section.classList.toggle("active", section.id === id);
+    });
+}
+
+// Content sections initialization
+function initSections() {
+    const content = document.getElementById("content");
+    Object.entries(data.sections).forEach(([id, section]) => {
+        const div = document.createElement("div");
+        div.className = `section ${id === currentTab ? "active" : ""}`;
+        div.id = id;
+        div.setAttribute("role", "tabpanel");
+        div.innerHTML = `
+            <h2 class="section-title">
+                <i class="fas fa-${section.icon}"></i>${section.title}
+            </h2>
+            <div class="content">
+                ${section.items.map(item => `
+                    <div class="item"${item.lang ? ` lang="${item.lang}"` : ""}>
+                        <i class="fas fa-${item.icon}"></i>
+                        <span>${item.text}</span>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+        content.appendChild(div);
+    });
+}
+
+// Autoplay functionality
+function startAutoplay() {
+    stopAutoplay();
+    autoplayInterval = setInterval(nextSlide, 5000);
+}
+
+function stopAutoplay() {
+    if (autoplayInterval) {
+        clearInterval(autoplayInterval);
+    }
+}
+
+// Event listeners
+document.querySelector(".next").onclick = nextSlide;
+document.querySelector(".prev").onclick = prevSlide;
+
+const carouselContainer = document.querySelector(".carousel-container");
+carouselContainer.addEventListener("mouseenter", stopAutoplay);
+carouselContainer.addEventListener("mouseleave", startAutoplay);
+
+// Initialize everything when the DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+    initCarousel();
+    initTabs();
+    initSections();
+    startAutoplay();
+});
+</script>
+</body>
